@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HelixCore", "HelixCore\HelixCore.vcxproj", "{EDB2CED5-DA9B-4FEB-A5CF-54E57AC4F415}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameServer", "GameServer\GameServer.vcxproj", "{833FEABF-EE2D-4AFF-927F-712A2D257EE7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EDB2CED5-DA9B-4FEB-A5CF-54E57AC4F415} = {EDB2CED5-DA9B-4FEB-A5CF-54E57AC4F415}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
