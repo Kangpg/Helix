@@ -1,0 +1,54 @@
+# folders
+/build/
+/CMakeBuild/
+/out/
+/x64/
+/Debug/
+/Release/
+
+# generated files 
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# vs files
+*.sln
+*.vcxproj*
+*.user
+*.opensdf
+*.sdf
+*.VC.db
+*.VC.opendb
+
+# system files
+*.log
+*.obj
+*.pch
+*.pdb
+*.idb
+*.ipch
+*.tlog
+*.lastbuildstate
+*.db
+*.exe
+*.dll
+*.lib
+*.exp
+*.ilk
+*.cache
+*.tmp
+*.ncb
+*.pyc
+*.class
+
+# vscode
+.vscode/
+
+# vs metadata
+.vs/
+
+# os
+.DS_Store
+Thumbs.db
+desktop.ini
