@@ -9,14 +9,14 @@ add_library(HelixCore
     HelixCore/Network.cpp
     HelixCore/Noncopable.cpp
     HelixCore/Server.cpp
-    HelixCore/Util/INIReader.cpp
+    ThirdParty/inih/cpp/INIReader.cpp
 
     HelixCore/Logger.h
     HelixCore/Network.h
     HelixCore/Noncopable.h
     HelixCore/Server.h
     HelixCore/Types.h
-    HelixCore/Util/INIReader.h
+    ThirdParty/inih/cpp/INIReader.h
 )
 
 # 서버 실행 파일
