@@ -6,13 +6,13 @@ using namespace Helix;
 class GameServer final : public Core::Base::Server
 {
 public:
-	GameServer(::sockaddr_storage addr) 
+	explicit GameServer(::sockaddr_storage addr) 
 		: Core::Base::Server(addr)
 	{
 
 	}
 
-	~GameServer() = default;
+	virtual ~GameServer() = default;
 
 	void LoadConfig() override {}
 

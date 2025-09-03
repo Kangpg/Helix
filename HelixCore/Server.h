@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Network.h"
-#include "Noncopable.h"
+#include "Noncopyable.h"
 
 namespace Helix::Core::Base {
-	class Server : public Util::Noncopable
+	class Server : public Util::Noncopyable
 	{
 	public:
 		Server(::sockaddr_storage addr)
@@ -12,14 +12,16 @@ namespace Helix::Core::Base {
 		{
 			Network::Network::Initialize();
 		}
-		virtual ~Server() 
+		virtual ~Server() noexcept
 		{
-			Network::Network::Initialize();
+			Network::Network::Finalize();
 		}
 
-		virtual void LoadConfig() = 0;
+		virtual void LoadConfig() abstract;
 
-		virtual void Run() = 0;
+		virtual void Run() abstract;
+
+		virtual void Stop() abstract;
 
 	protected:
 		::sockaddr_storage _addr;
