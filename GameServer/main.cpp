@@ -6,8 +6,6 @@
 
 #include "../HelixCore/Logger.h"
 
-#include "../ThirdParty/mimalloc/include/mimalloc-new-delete.h"
-
 #pragma comment(lib, "ws2_32.lib")
 
 #define RPMALLOC_ENABLE_OVERRIDE
@@ -15,10 +13,8 @@
 using namespace Helix;
 int main(int argc, const char* argv[])
 {
-#pragma region Initializer
-
-#if defined(_DEBUG)
-#else
+#pragma region initializer
+#if !defined(_DEBUG)
 	mi_option_set(mi_option_t::mi_option_show_stats, 0);
 	mi_option_set(mi_option_t::mi_option_verbose, 0);
 #endif // _DEBUG
@@ -30,7 +26,6 @@ int main(int argc, const char* argv[])
 
 	Helix::Util::Log::Logger::Init(serverPath.filename().string());
 	LOG_NOTICE("Logger cannot init...");
-
 #pragma endregion
 	
 #pragma region main_logic	
@@ -41,19 +36,17 @@ int main(int argc, const char* argv[])
 			.sin_port = htons(5000),
 			.sin_addr = [] {
 				in_addr addr{};
-				inet_pton(AF_INET, "127.0.0.1", &addr);
+				inet_pton(AF_INET, "0.0.0.0", &addr);
 				return addr;
 			}(),
 		};
 		return storage;
 	}());
-	LOG_NOTICE("Now server is processing...");
 
+	LOG_NOTICE("Now server is processing...");
 #pragma endregion 
 
-#pragma region Finalizer
-
+#pragma region finalizer
 	return EXIT_SUCCESS;
-
 #pragma endregion
 }

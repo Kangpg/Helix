@@ -6,7 +6,7 @@ using namespace Helix;
 class GameServer final : public Core::Base::Server
 {
 public:
-	explicit GameServer(::sockaddr_storage addr) 
+	explicit GameServer(::sockaddr_storage& addr) 
 		: Core::Base::Server(addr)
 	{
 
@@ -17,4 +17,6 @@ public:
 	void LoadConfig() override {}
 
 	void Run() override {}
+
+	void Stop() override {}
 };

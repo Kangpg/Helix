@@ -1,0 +1,9 @@
+{
+  "name": "helix",
+  "version-string": "0.1.0",
+  "dependencies": [
+	{"name":"inih", "features":["cpp"]},
+	"curl",
+	"mimalloc"
+  ]
+}

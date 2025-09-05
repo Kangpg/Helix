@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Network.h"
 #include "Noncopyable.h"
 
 namespace Helix::Core::Base {

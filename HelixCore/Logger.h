@@ -11,8 +11,6 @@
 
 #include "Types.h"
 
-#pragma comment(lib, "Dbghelp.lib")
-
 #define LOG_DEBUG(msg) Helix::Util::Log::Logger::Log(Helix::Util::Log::eLogLevel::Debug, __FUNCTION__, __LINE__, msg);
 #define LOG_NOTICE(msg) Helix::Util::Log::Logger::Log(Helix::Util::Log::eLogLevel::Notice, __FUNCTION__, __LINE__, msg);
 #define LOG_WARNING(msg) Helix::Util::Log::Logger::Log(Helix::Util::Log::eLogLevel::Warning, __FUNCTION__, __LINE__, msg);
@@ -21,13 +19,7 @@
 using namespace Helix::Util::Types;
 namespace Helix::Util::Log 
 {
-	enum class eLogLevel
-	{
-		Debug = 0,
-		Notice,
-		Warning,
-		Fatal,
-	};
+	enum class eLogLevel { Debug, Notice, Warning, Fatal };
 
 	class Logger final
 	{
