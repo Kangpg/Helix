@@ -17,4 +17,6 @@ public:
 	void LoadConfig() override {}
 
 	void Run() override {}
+
+	void Stop() override {}
 };
