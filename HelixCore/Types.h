@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-namespace Helix::Util::Types
+namespace Helix
 {
 	using byte = unsigned char;
 

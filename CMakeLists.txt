@@ -29,20 +29,28 @@ add_library(HelixCore
   HelixCore/Network.cpp
   HelixCore/Noncopyable.cpp
   HelixCore/Server.cpp
+  HelixCore/ServerConfig.cpp
+  HelixCore/INIData.cpp
   HelixCore/AllocationOverride.cpp  # ← 전역 new/delete 오버라이드
   # headers
   HelixCore/Logger.h
   HelixCore/Network.h
   HelixCore/Noncopyable.h
   HelixCore/Server.h
+  HelixCore/ServerConfig.h
+  HelixCore/IFileLoader.h
+  HelixCore/ILoadable.h
+  HelixCore/INIFileLoader.h
+  HelixCore/INIData.h
   HelixCore/Types.h
 )
 
 target_include_directories(HelixCore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/HelixCore)
 
 target_link_libraries(HelixCore
-  PRIVATE
+  PUBLIC
     unofficial::inih::inireader
+  PRIVATE
     CURL::libcurl
     ${MI_TGT}
     # Windows system libs (pragma 대신 CMake로 연결)

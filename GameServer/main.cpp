@@ -4,7 +4,8 @@
 
 #include "GameServer.h"
 
-#include "../HelixCore/Logger.h"
+#include "Logger.h"
+#include "INIFileLoader.h"
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -25,26 +26,41 @@ int main(int argc, const char* argv[])
 	std::filesystem::path serverPath(path);
 
 	Helix::Util::Log::Logger::Init(serverPath.filename().string());
-	LOG_NOTICE("Logger cannot init...");
+	LOG_NOTICE("Logger initialized");
 #pragma endregion
-	
-#pragma region main_logic	
-	std::unique_ptr<Helix::Core::Base::Server> server = std::make_unique<GameServer>([] {
-		sockaddr_storage storage{};
-		*reinterpret_cast<sockaddr_in*>(&storage) = sockaddr_in{
-			.sin_family = AF_INET,
-			.sin_port = htons(5000),
-			.sin_addr = [] {
-				in_addr addr{};
-				inet_pton(AF_INET, "0.0.0.0", &addr);
-				return addr;
-			}(),
-		};
-		return storage;
-	}());
 
+	std::filesystem::path configPath = serverPath.parent_path() / "server_config.ini";
+	LOG_NOTICE("Loading configuration from: " + configPath.string());
+
+	Util::INIFileLoader<Core::ServerConfig> configLoader;
+
+	if (!configLoader.Validate(configPath.string()))
+	{
+		LOG_WARNING("Config file not found, using default configuration");
+	}
+
+	auto config = configLoader.LoadOrDefault(configPath.string());
+
+	if (!configLoader.GetLastError().empty())
+	{
+		LOG_WARNING("Config load error: " + configLoader.GetLastError());
+	}
+
+	// Log configuration
+	LOG_NOTICE("Server Configuration:");
+	LOG_NOTICE("  IP: " + config.ip);
+	LOG_NOTICE("  Port: " + std::to_string(config.port));
+	LOG_NOTICE("  IO Threads: " + std::to_string(config.GetIOThreadCount()));
+	LOG_NOTICE("  Worker Threads: " + std::to_string(config.GetWorkerThreadCount()));
+	LOG_NOTICE("  Max Connections: " + std::to_string(config.maxConnections));
+
+	// Create server with loaded configuration
+	std::unique_ptr<Helix::Core::Server> server = std::make_unique<GameServer>(std::move(config));
+
+	server->Run();
+
+	LOG_NOTICE("Server initialized successfully");
 	LOG_NOTICE("Now server is processing...");
-#pragma endregion 
 
 #pragma region finalizer
 	return EXIT_SUCCESS;

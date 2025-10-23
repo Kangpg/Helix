@@ -1,20 +1,19 @@
 #pragma once
 
 #include "Server.h"
+#include "ServerConfig.h"
 
 using namespace Helix;
-class GameServer final : public Core::Base::Server
+class GameServer final : public Core::Server
 {
 public:
-	explicit GameServer(::sockaddr_storage addr) 
-		: Core::Base::Server(addr)
+	explicit GameServer(Core::ServerConfig config)
+		: Core::Server(std::move(config))
 	{
 
 	}
 
 	virtual ~GameServer() = default;
-
-	void LoadConfig() override {}
 
 	void Run() override {}
 

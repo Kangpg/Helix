@@ -16,7 +16,6 @@
 #define LOG_WARNING(msg) Helix::Util::Log::Logger::Log(Helix::Util::Log::eLogLevel::Warning, __FUNCTION__, __LINE__, msg);
 #define	LOG_FATAL(msg) Helix::Util::Log::Logger::Log(Helix::Util::Log::eLogLevel::Fatal, __FUNCTION__, __LINE__, msg);
 
-using namespace Helix::Util::Types;
 namespace Helix::Util::Log 
 {
 	enum class eLogLevel { Debug, Notice, Warning, Fatal };
@@ -27,19 +26,19 @@ namespace Helix::Util::Log
 		Logger() = default;
 		~Logger() = default;
 
-		static void Init(std::string_view logName) 
+		static inline void Init(std::string_view logName) 
 		{
 			_currentLogDay = GetDate();
 
 			OpenLogFile(logName);
 		}
 
-		static void Log(eLogLevel level, std::string_view funcName, int32 line, std::string_view logVal = "")
+		static inline void Log(eLogLevel level, std::string_view funcName, int32 line, std::string_view logVal = "")
 		{
 			_stream << "[" << std::this_thread::get_id() << "]" << funcName << "(" << line << ")" << " : " << logVal << "\n";
 		}
 
-		static void OpenLogFile(std::string_view fileName) 
+		static inline void OpenLogFile(std::string_view fileName)
 		{
 			std::lock_guard<std::recursive_mutex> lock(_lock);
 
@@ -57,10 +56,13 @@ namespace Helix::Util::Log
 #if defined(_MSC_VER)
 			_fileName = std::format("{}_{}.log", fileName, _currentLogDay);
 			_stream.open(_fileName, std::ios::out | std::ios::app);
+#else
+			_fileName = std::string("%s_%s.log", fileName, _currentLogDay);
+			_stream.open(_fileName, std::ios::out | std::ios::app);
 #endif // _MSC_VER
 		}
 
-		static void StackTrace()
+		static inline void StackTrace()
 		{
 			constexpr int maxFrames = 64;
 			void* stack[maxFrames];
@@ -105,11 +107,10 @@ namespace Helix::Util::Log
 			SymCleanup(process);
 		}
 
-		static int32 GetDate() 
+		static inline int32 GetDate()
 		{
 			auto now = std::chrono::system_clock::now();
 			std::time_t t = std::chrono::system_clock::to_time_t(now);
-
 
 			struct tm timeInfo;
 			localtime_s(&timeInfo, &t);
