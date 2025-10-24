@@ -47,13 +47,7 @@ namespace Helix::Util {
 			return config;
 		}
 
-		[[nodiscard]] bool Validate(const std::string& filePath) const override
-		{
-			auto result = Load(filePath);
-			return result.has_value();
-		}
-
-		[[nodiscard]] std::string GetLastError() const override
+		[[nodiscard]] std::string_view GetLastError() const override
 		{
 			return _lastError;
 		}

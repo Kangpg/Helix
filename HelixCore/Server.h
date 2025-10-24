@@ -13,18 +13,14 @@ namespace Helix::Core {
 		explicit Server(ServerConfig config)
 			: _config(std::move(config))
 		{
-			Network::Network::Initialize();
 			InitializeAddress();
 		}
 
-		virtual ~Server() noexcept
-		{
-			Network::Network::Finalize();
-		}
+		virtual ~Server() noexcept = default;
 
-		virtual void Run() abstract;
+		virtual void Run() = 0;
 
-		virtual void Stop() abstract;
+		virtual void Stop() = 0;
 
 		[[nodiscard]] const ServerConfig& GetConfig() const noexcept { return _config; }
 

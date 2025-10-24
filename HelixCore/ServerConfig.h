@@ -20,6 +20,7 @@ namespace Helix::Core {
 
 		std::string ip = "0.0.0.0";
 		uint16 port = 5000;
+		uint16 grpcPort = 50051;
 
 		uint32 ioThreadCount = 0;
 		uint32 workerThreadCount = 0;

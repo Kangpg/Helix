@@ -2,25 +2,25 @@
 
 #include <WinSock2.h>
 #include <WS2tcpip.h>
-#include <MSWSock.h>
 #include <Windows.h>
-#include <bit>
-#include "Logger.h"
+#include "Noncopyable.h"
 
-namespace Helix::Core::Network 
+namespace Helix::Core::Network
 {
-	class Network
+	class NetworkInitializer : public Util::Noncopyable
 	{
 	public:
-		Network() = default;
+		NetworkInitializer();
+		virtual ~NetworkInitializer() noexcept;
 
-		static bool Initialize();
-		static bool Finalize();
+		[[nodiscard]] bool IsInitialized() const noexcept { return _isInitialized; }
 
-		inline static LPFN_CONNECTEX g_connectEx = nullptr;
-		inline static LPFN_ACCEPTEX g_acceptEx = nullptr;
-		inline static LPFN_DISCONNECTEX g_disconnectEx = nullptr;
+	private:
+		bool Initialize() noexcept;
+		bool Finalize();
 
-		static bool LoadExFunction();
+		bool _isInitialized = false;
 	};
-} // namespace Helix::Network
+
+	static NetworkInitializer g_networkInitializer{};
+} // namespace Helix::Core::Network

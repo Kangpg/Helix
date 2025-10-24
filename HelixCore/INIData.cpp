@@ -8,32 +8,37 @@ namespace Helix::Util {
 	{
 	}
 
-	INIData::~INIData() = default;
-
-	INIData::INIData(INIData&&) noexcept = default;
-	INIData& INIData::operator=(INIData&&) noexcept = default;
-
-	std::string INIData::GetString(const std::string& section, const std::string& name, const std::string& defaultValue) const
+	[[nodiscard]] std::string INIData::GetString(const std::string& section, const std::string& name, const std::string& defaultValue /*= 0*/) const
 	{
 		return _reader->GetString(section, name, defaultValue);
 	}
 
-	long INIData::GetInteger(const std::string& section, const std::string& name, long defaultValue) const
+	[[nodiscard]] int32 INIData::GetInt(const std::string& section, const std::string& name, int32 defaultValue /*= 0*/) const
 	{
 		return _reader->GetInteger(section, name, defaultValue);
 	}
 
-	unsigned long INIData::GetUnsigned(const std::string& section, const std::string& name, unsigned long defaultValue) const
+	[[nodiscard]] int64 INIData::GetInt64(const std::string& section, const std::string& name, int64 defaultValue /*= 0*/) const
 	{
-		return static_cast<unsigned long>(_reader->GetInteger(section, name, static_cast<long>(defaultValue)));
+		return _reader->GetInteger64(section, name, defaultValue);
 	}
 
-	double INIData::GetReal(const std::string& section, const std::string& name, double defaultValue) const
+	[[nodiscard]] uint32 INIData::GetUInt(const std::string& section, const std::string& name, uint32 defaultValue /*= 0*/) const
+	{
+		return _reader->GetUnsigned(section, name, defaultValue);
+	}
+
+	[[nodiscard]] uint64 INIData::GetUInt64(const std::string& section, const std::string& name, uint64 defaultValue /*= 0*/) const
+	{
+		return _reader->GetUnsigned64(section, name, defaultValue);
+	}
+
+	[[nodiscard]] double INIData::GetDouble(const std::string& section, const std::string& name, double defaultValue /*= 0*/) const
 	{
 		return _reader->GetReal(section, name, defaultValue);
 	}
 
-	bool INIData::GetBoolean(const std::string& section, const std::string& name, bool defaultValue) const
+	[[nodiscard]] bool INIData::GetBoolean(const std::string& section, const std::string& name, bool defaultValue /*= 0*/) const
 	{
 		return _reader->GetBoolean(section, name, defaultValue);
 	}

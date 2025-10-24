@@ -4,6 +4,7 @@
   "dependencies": [
 	{"name":"inih", "features":["cpp"]},
 	"curl",
-	"mimalloc"
+	"mimalloc",
+	{"name": "grpc", "features": ["codegen"]}
   ]
 }

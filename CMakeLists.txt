@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(Helix)  # 솔루션 이름
+project(Helix VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -11,8 +11,9 @@ endif()
 
 # --- vcpkg 패키지들 ---
 find_package(unofficial-inih CONFIG REQUIRED)
-find_package(CURL REQUIRED)
 find_package(mimalloc CONFIG REQUIRED)
+find_package(gRPC CONFIG REQUIRED)
+find_package(Protobuf CONFIG REQUIRED)
 
 # mimalloc 타깃 선택(환경에 따라 이름이 다를 수 있음)
 if(TARGET mimalloc-static)
@@ -23,18 +24,63 @@ else()
   message(FATAL_ERROR "mimalloc target not found")
 endif()
 
+# --- Protobuf & gRPC 코드 생성 ---
+set(PROTO_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/protos/server_control.proto
+)
+
+# protoc과 grpc_cpp_plugin 경로 가져오기
+get_target_property(PROTOBUF_PROTOC_EXECUTABLE protobuf::protoc IMPORTED_LOCATION_RELEASE)
+if(NOT PROTOBUF_PROTOC_EXECUTABLE)
+  get_target_property(PROTOBUF_PROTOC_EXECUTABLE protobuf::protoc IMPORTED_LOCATION_DEBUG)
+endif()
+
+get_target_property(GRPC_CPP_PLUGIN gRPC::grpc_cpp_plugin IMPORTED_LOCATION_RELEASE)
+if(NOT GRPC_CPP_PLUGIN)
+  get_target_property(GRPC_CPP_PLUGIN gRPC::grpc_cpp_plugin IMPORTED_LOCATION_DEBUG)
+endif()
+
+# 생성된 파일 경로
+set(PROTO_SRCS "${CMAKE_CURRENT_BINARY_DIR}/server_control.pb.cc")
+set(PROTO_HDRS "${CMAKE_CURRENT_BINARY_DIR}/server_control.pb.h")
+set(GRPC_SRCS "${CMAKE_CURRENT_BINARY_DIR}/server_control.grpc.pb.cc")
+set(GRPC_HDRS "${CMAKE_CURRENT_BINARY_DIR}/server_control.grpc.pb.h")
+
+# protobuf 컴파일 커스텀 커맨드
+add_custom_command(
+  OUTPUT ${PROTO_SRCS} ${PROTO_HDRS} ${GRPC_SRCS} ${GRPC_HDRS}
+  COMMAND ${PROTOBUF_PROTOC_EXECUTABLE}
+  ARGS --grpc_out=${CMAKE_CURRENT_BINARY_DIR}
+       --cpp_out=${CMAKE_CURRENT_BINARY_DIR}
+       -I ${CMAKE_CURRENT_SOURCE_DIR}/protos
+       --plugin=protoc-gen-grpc=${GRPC_CPP_PLUGIN}
+       ${PROTO_FILES}
+  DEPENDS ${PROTO_FILES}
+  COMMENT "Generating gRPC code from proto files"
+)
+
 # --- HelixCore ---
 add_library(HelixCore
   HelixCore/Logger.cpp
   HelixCore/Network.cpp
+  HelixCore/SocketExtension.cpp
   HelixCore/Noncopyable.cpp
   HelixCore/Server.cpp
   HelixCore/ServerConfig.cpp
   HelixCore/INIData.cpp
-  HelixCore/AllocationOverride.cpp  # ← 전역 new/delete 오버라이드
+  # HelixCore/AllocationOverride.cpp  # 임시로 비활성화
+  HelixCore/ServerControlService.cpp
+
+  # gRPC generated files
+  ${PROTO_SRCS}
+  ${PROTO_HDRS}
+  ${GRPC_SRCS}
+  ${GRPC_HDRS}
+
   # headers
   HelixCore/Logger.h
   HelixCore/Network.h
+  HelixCore/SocketExtension.h
   HelixCore/Noncopyable.h
   HelixCore/Server.h
   HelixCore/ServerConfig.h
@@ -43,16 +89,23 @@ add_library(HelixCore
   HelixCore/INIFileLoader.h
   HelixCore/INIData.h
   HelixCore/Types.h
+  HelixCore/ServerControlService.h
 )
 
-target_include_directories(HelixCore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/HelixCore)
+target_include_directories(HelixCore
+  PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/HelixCore
+    ${CMAKE_CURRENT_BINARY_DIR}  # for generated proto headers
+)
 
 target_link_libraries(HelixCore
   PUBLIC
     unofficial::inih::inireader
+    gRPC::grpc++
+    gRPC::grpc++_reflection
+    protobuf::libprotobuf
   PRIVATE
-    CURL::libcurl
-    ${MI_TGT}
+    # ${MI_TGT}  # 임시로 비활성화
     # Windows system libs (pragma 대신 CMake로 연결)
     ws2_32
     mswsock

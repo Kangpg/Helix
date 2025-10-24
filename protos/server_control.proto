@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package helix.control;
+
+// Server control service for administrative operations
+service ServerControl {
+  // Stop the server gracefully
+  rpc Stop(StopRequest) returns (StopResponse);
+
+  // Get server status
+  rpc GetStatus(StatusRequest) returns (StatusResponse);
+
+  // Reload configuration
+  rpc ReloadConfig(ReloadConfigRequest) returns (ReloadConfigResponse);
+}
+
+// Stop request
+message StopRequest {
+  // Optional: reason for stopping
+  string reason = 1;
+
+  // Optional: grace period in seconds
+  uint32 grace_period_seconds = 2;
+}
+
+message StopResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// Status request
+message StatusRequest {
+}
+
+message StatusResponse {
+  bool is_running = 1;
+  string server_version = 2;
+  uint64 uptime_seconds = 3;
+  uint32 active_connections = 4;
+  string server_ip = 5;
+  uint32 server_port = 6;
+}
+
+// Reload config request
+message ReloadConfigRequest {
+}
+
+message ReloadConfigResponse {
+  bool success = 1;
+  string message = 2;
+}

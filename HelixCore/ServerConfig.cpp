@@ -6,45 +6,38 @@
 namespace Helix::Core {
 	bool ServerConfig::LoadFrom(const Util::INIData& source)
 	{
-		// [Network] section
-		ip = source.GetString("Network", "ip", ip);
-		port = static_cast<uint16>(source.GetUnsigned("Network", "port", port));
+		// Network
+		ip = source.GetString("Network", "ip", "0.0.0.0");
+		port = static_cast<uint16>(source.GetUInt("Network", "port", 5000));
+		grpcPort = static_cast<uint16>(source.GetUInt("Network", "grpc_port", 50051));
 
-		// [Threads] section
-		ioThreadCount = static_cast<uint32>(source.GetUnsigned("Threads", "io_thread_count", ioThreadCount));
-		workerThreadCount = static_cast<uint32>(source.GetUnsigned("Threads", "worker_thread_count", workerThreadCount));
+		// Threads
+		ioThreadCount = source.GetUInt("Threads", "io_thread_count", std::thread::hardware_concurrency());
+		workerThreadCount = source.GetUInt("Threads", "worker_thread_count", std::thread::hardware_concurrency());
 
-		// [Server] section
-		maxConnections = static_cast<uint32>(source.GetUnsigned("Server", "max_connections", maxConnections));
-		backlogSize = static_cast<uint32>(source.GetUnsigned("Server", "backlog_size", backlogSize));
+		// Server
+		maxConnections = source.GetUInt("Server", "max_connections", 1000);
+		backlogSize = source.GetUInt("Server", "backlog_size", 10);
 
-		// [Timeouts] section
-		connectTimeoutSec = static_cast<uint32>(source.GetUnsigned("Timeouts", "connect_timeout_sec", connectTimeoutSec));
-		readTimeoutSec = static_cast<uint32>(source.GetUnsigned("Timeouts", "read_timeout_sec", readTimeoutSec));
-		writeTimeoutSec = static_cast<uint32>(source.GetUnsigned("Timeouts", "write_timeout_sec", writeTimeoutSec));
+		// Timeouts
+		connectTimeoutSec = source.GetUInt("Timeouts", "connect_timeout_sec", 30);
+		readTimeoutSec = source.GetUInt("Timeouts", "read_timeout_sec", 30);
+		writeTimeoutSec = source.GetUInt("Timeouts", "write_timeout_sec", 30);
 
-		// [Buffers] section
-		receiveBufferSize = static_cast<uint32>(source.GetUnsigned("Buffers", "receive_buffer_size", receiveBufferSize));
-		sendBufferSize = static_cast<uint32>(source.GetUnsigned("Buffers", "send_buffer_size", sendBufferSize));
+		// Buffers
+		receiveBufferSize = source.GetUInt("Buffers", "receive_buffer_size", 1024);
+		sendBufferSize = source.GetUInt("Buffers", "send_buffer_size", 1024);
 
 		return true;
 	}
 
 	uint32 ServerConfig::GetIOThreadCount() const noexcept
 	{
-		if (ioThreadCount == 0)
-		{
-			return std::thread::hardware_concurrency();
-		}
 		return ioThreadCount;
 	}
 
 	uint32 ServerConfig::GetWorkerThreadCount() const noexcept
 	{
-		if (workerThreadCount == 0)
-		{
-			return std::thread::hardware_concurrency();
-		}
 		return workerThreadCount;
 	}
 }

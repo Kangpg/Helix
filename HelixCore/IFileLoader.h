@@ -13,14 +13,12 @@ namespace Helix::Util {
 
 		[[nodiscard]] virtual std::optional<T> Load(const std::string& filePath) const = 0;
 
-		[[nodiscard]] virtual T LoadOrDefault(const std::string& filePath) const
+		[[nodiscard]] virtual T LoadFile(const std::string& filePath) const
 		{
 			auto data = Load(filePath);
 			return data.value_or(T{});
 		}
 
-		[[nodiscard]] virtual bool Validate(const std::string& filePath) const = 0;
-
-		[[nodiscard]] virtual std::string GetLastError() const = 0;
+		[[nodiscard]] virtual std::string_view GetLastError() const = 0;
 	};
 }
