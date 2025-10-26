@@ -1,6 +1,5 @@
 #pragma once
 
-// gRPC ����� �� ���� include
 #include <grpcpp/grpcpp.h>
 
 #include "ServerConfig.h"

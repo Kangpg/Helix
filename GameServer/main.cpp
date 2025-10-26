@@ -2,13 +2,11 @@
 #include <filesystem>
 #include <cassert>
 
-// gRPC�� �����ϴ� GameServer.h�� �� ���� include
 #include "GameServer.h"
+#include "Network.h"
 
-// �� ���� �ٸ� �����
 #include "Logger.h"
 #include "INIFileLoader.h"
-// Network.h�� Server.h�� �̹� ���ԵǾ� �����Ƿ� ����
 
 #pragma comment(lib, "ws2_32.lib")
 
