@@ -2,13 +2,13 @@
 #include <filesystem>
 #include <cassert>
 
-// gRPC를 포함하는 GameServer.h를 맨 먼저 include
+// gRPC�� �����ϴ� GameServer.h�� �� ���� include
 #include "GameServer.h"
 
-// 그 다음 다른 헤더들
+// �� ���� �ٸ� �����
 #include "Logger.h"
 #include "INIFileLoader.h"
-// Network.h는 Server.h에 이미 포함되어 있으므로 제거
+// Network.h�� Server.h�� �̹� ���ԵǾ� �����Ƿ� ����
 
 #pragma comment(lib, "ws2_32.lib")
 

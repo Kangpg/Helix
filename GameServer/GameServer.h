@@ -1,6 +1,6 @@
 #pragma once
 
-// gRPC 헤더를 맨 먼저 include
+// gRPC ����� �� ���� include
 #include <grpcpp/grpcpp.h>
 
 #include "ServerConfig.h"
